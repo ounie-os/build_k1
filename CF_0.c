@@ -1,4 +1,6 @@
 //ver 0.01
+#define _GNU_SOURCE
+
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
@@ -19,6 +21,8 @@
 #include <fcntl.h>
 #include "ecrt.h"
 #include "OD_0_0.h"
+#include <time.h>
+
 
 extern UNS16 gUIBufs[1000];
 extern UNS16 gUOBufs[1000];
@@ -268,9 +272,9 @@ return 0;
         {
             reg.slave_position = i;
             if(ioctl(fd, EC_IOCTL_SLAVE_REG_READ, &reg) <0)
-                printf("ioctl error:%s\n", strerror(errno));
+                ;//printf("ioctl error:%s\n", strerror(errno));
             else {
-                printf("slave %d state:%d\n", i, slave_state);
+                //printf("slave %d state:%d\n", i, slave_state);
                 if(slave_state != 0x02)
                     break;
             }
@@ -286,7 +290,7 @@ return 0;
         }
     }
     close(fd);
-    printf("all slave is preop, ok\n");
+    //printf("all slave is preop, ok\n");
 }//如果从站不是同时启动，resan从站数量会变化，rescan能保证获取到最终的物理从站数量
 	
     master = ecrt_request_master(0);
@@ -379,7 +383,7 @@ void __cleanup_0()
 #ifdef WIN32R	
 return;
 #else
-    printf("End of Program\n");
+    //printf("End of Program\n");
     ecrt_release_master(master);
 #endif
 }
@@ -392,11 +396,11 @@ void rt_check_domain_state(void)
     ecrt_domain_state(domain0, &ds);
 
     if (ds.working_counter != domain0_state.working_counter) {
-        rt_printf("domain0: WC error");
+        //rt_printf("domain0: WC error");
     }
 
     if (ds.wc_state != domain0_state.wc_state) {
-        rt_printf("domain0: State error");
+        //rt_printf("domain0: State error");
     }
 
     domain0_state = ds;
@@ -411,15 +415,15 @@ void rt_check_master_state(void)
     ecrt_master_state(master, &ms);
 
     if (ms.slaves_responding != master_state.slaves_responding) {
-        rt_printf("%u slave(s).\n", ms.slaves_responding);
+        //rt_printf("%u slave(s).\n", ms.slaves_responding);
     }
 
     if (ms.al_states != master_state.al_states) {
-        rt_printf("AL states: 0x%02X.\n", ms.al_states);
+        //rt_printf("AL states: 0x%02X.\n", ms.al_states);
     }
 
     if (ms.link_up != master_state.link_up) {
-        rt_printf("Link is %s.\n", ms.link_up ? "up" : "down");
+        //rt_printf("Link is %s.\n", ms.link_up ? "up" : "down");
     }
 
     master_state = ms;
@@ -430,7 +434,11 @@ void rt_check_master_state(void)
  */
 void sync_distributed_clocks(void)
 {
-	ecrt_master_application_time(master, rt_timer_read());
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    int64_t ns = (int64_t)ts.tv_sec * 1000000000LL + ts.tv_nsec;
+
+	ecrt_master_application_time(master, ns);
 	
 	// sync reference clock to master
 	ecrt_master_sync_reference_clock(master);

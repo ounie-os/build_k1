@@ -16,14 +16,27 @@
     #include "OD_0_0.h"
 	#define IPC200
 	//#include "sm402.h"
-	double GetItemValue( int iStationid,  int id ) ;
-	void  SetItemValue( int iStationid ,  int id , double dValue ) ;
+	//double GetItemValue( int iStationid,  int id ) ;
+	//void  SetItemValue( int iStationid ,  int id , double dValue ) ;
 #endif
 //UNS16 * gUIBufs = (UNS16 * )&Modbus_Holdings[1000];
 //UNS16 * gUOBufs = (UNS16 * )&Modbus_Holdings[2000];
 UNS16 gUIBufs[1000];
 UNS16 gUOBufs[1000];
 UNS16 Modbus_Holdings[1000];//0-1000:Holding;1000-2000:UBUF
+
+double GetItemValue( int iStationid ,  int id )
+{
+    
+}
+
+void SetItemValue( int iStationid ,  int id , double dValue )
+{
+
+}
+
+
+
 static inline uint16_t cia402_state_machine(uint16_t status)
 {
 	uint16_t control_word=0;

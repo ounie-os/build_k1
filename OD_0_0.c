@@ -2563,5 +2563,5 @@ const quick_index OD_0_0_lastIndex = {
 
 const UNS16 OD_0_0_ObjdictSize = sizeof(OD_0_0_objdict)/sizeof(OD_0_0_objdict[0]); 
 
-CO_Data OD_0_0_Data = CANOPEN_NODE_DATA_INITIALIZER(OD_0_0);
+//CO_Data OD_0_0_Data = CANOPEN_NODE_DATA_INITIALIZER(OD_0_0);
 

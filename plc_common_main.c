@@ -180,7 +180,7 @@ void signal_handler(int sig)
 {
     printf("Deleting realtime task...\n");
 	run = 0;
-    knm_close2();
+    //knm_close2();
 }
 void signal_handler2(int sig)
 {
@@ -216,10 +216,11 @@ extern unsigned long __tick;
 //static long long Ttick = 0;
 void PLC_GetTime(IEC_TIME *CURRENT_TIME)
 {
-    unsigned long long timenow;
-    timenow = rt_timer_read();
-    CURRENT_TIME->tv_sec = timenow / 1000000000;
-    CURRENT_TIME->tv_nsec = timenow % 1000000000;	
+    //unsigned long long timenow;
+    //timenow = rt_timer_read();
+    //CURRENT_TIME->tv_sec = timenow / 1000000000;
+    //CURRENT_TIME->tv_nsec = timenow % 1000000000;
+    clock_gettime(CLOCK_REALTIME, CURRENT_TIME);
 }
 void PLC_SetTimer(unsigned long long next, unsigned long long period)
 {
