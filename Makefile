@@ -3,7 +3,9 @@ CC = /mnt/k1/spacemit-toolchain-linux-glibc-x86_64-v1.0.0/bin/riscv64-unknown-li
 BASEPATH=$(CURDIR)
 INC_PATH=$(BASEPATH)/include
 
-CFLAGS = -O0 -w -Wall -DECAT -I$(INC_PATH)/ecatlib/inc -I./ -I$(INC_PATH)/ecatlib/matiec/lib -I$(INC_PATH)/ecatlib/eloginc -I$(INC_PATH)/ecatlib/ecat_inc -I/home/usr/i686-buildroot-linux-gnu/sysroot/usr/include/python2.7 -DDC -fPIC
+#CFLAGS = -O0 -w -Wall -DECAT -I$(INC_PATH)/ecatlib/inc -I./ -I$(INC_PATH)/ecatlib/matiec/lib -I$(INC_PATH)/ecatlib/eloginc -I$(INC_PATH)/ecatlib/ecat_inc -I/home/usr/i686-buildroot-linux-gnu/sysroot/usr/include/python2.7 -DDC -fPIC
+
+CFLAGS = -O0 -w -Wall -DECAT -I$(INC_PATH)/ecatlib/inc -I./ -I$(INC_PATH)/ecatlib/matiec/lib -I$(INC_PATH)/ecatlib/eloginc -I$(INC_PATH)/ecatlib/ecat_inc -I/home/usr/i686-buildroot-linux-gnu/sysroot/usr/include/python2.7 -DDC
 
 #LDFLAGS = -shared -lpthread -lrt -ldl -L$(BASEPATH) -lmbtcp -leasylogger -lethercat
 LDFLAGS = -lpthread -lrt -ldl -L$(BASEPATH) -lmbtcp -leasylogger -lethercat
