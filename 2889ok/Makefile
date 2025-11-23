@@ -8,12 +8,14 @@ INC_PATH=$(BASEPATH)/include
 CFLAGS = -O0 -w -Wall -DECAT -I$(INC_PATH)/ecatlib/inc -I./ -I$(INC_PATH)/ecatlib/matiec/lib -I$(INC_PATH)/ecatlib/eloginc -I$(INC_PATH)/ecatlib/ecat_inc -I/home/usr/i686-buildroot-linux-gnu/sysroot/usr/include/python2.7 -DDC
 
 #LDFLAGS = -shared -lpthread -lrt -ldl -L$(BASEPATH) -lmbtcp -leasylogger -lethercat
-LDFLAGS = -lpthread -lrt -ldl -L$(BASEPATH) -lethercat -lmbtcp -leasylogger -Wl,-rpath,$$ORIGIN/./
+LDFLAGS = -lpthread -lrt -ldl -L$(BASEPATH) -lethercat 
+#-lmbtcp -leasylogger -Wl,-rpath,$$ORIGIN/./
 
 #TARGET = _plc.so
-TARGET = rtm
+TARGET = _plc
 
-MASTER_OBJS = plc_common_main.o plc_debugger.o conf.o src.o CF_0.o OD_0_0.o modbus1.o
+#MASTER_OBJS = plc_common_main.o plc_debugger.o conf.o src.o CF_0.o OD_0_0.o modbus1.o
+MASTER_OBJS = ek1100_el2889.o
 OBJS =  $(MASTER_OBJS)
 
 all : $(OBJS)

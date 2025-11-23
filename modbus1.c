@@ -342,7 +342,10 @@ void set_mbuf(unsigned char type,unsigned short idx,unsigned short newvalue)
 	if (type==2)//HIO BOOL
 	{
 		if (idx<OD_0_0_highestSubIndex_obj4121)
+		{
 			HIO_Output_Bools[idx]=newvalue;
+			//log_i("new %d,%d",idx,newvalue);
+		}
 	}
 	if (type==3)//HIO Integer
 	{

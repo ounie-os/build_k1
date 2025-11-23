@@ -1,3 +1,4 @@
+#include <elog.h>
 void GET_INTERVAL_init__(GET_INTERVAL *data__, BOOL retain) {
   __INIT_VAR(data__->EN,__BOOL_LITERAL(TRUE),retain)
   __INIT_VAR(data__->ENO,__BOOL_LITERAL(TRUE),retain)
@@ -291,7 +292,6 @@ void BUF_WRITE_body__(BUF_WRITE *data__) {
     __SET_VAR(data__->,ENO,,__BOOL_LITERAL(TRUE));
   }
   // Initialise TEMP variables
-
   __IL_DEFVAR_T __IL_DEFVAR;
   __IL_DEFVAR_T __IL_DEFVAR_BACK;
   #define GetFbVar(var,...) __GET_VAR(data__->var,__VA_ARGS__)
@@ -3190,7 +3190,6 @@ void IDLE_init__(IDLE *data__, BOOL retain) {
 // Code part
 void IDLE_body__(IDLE *data__) {
   // Initialise TEMP variables
-
   __SET_VAR(data__->FFG.,ENABLE,,1);
   SFC_HORSE_body__(&data__->FFG);
   __SET_VAR(data__->BBB.,B0,,__GET_VAR(data__->FFG.BIT0,));
@@ -3206,7 +3205,6 @@ void IDLE_body__(IDLE *data__) {
   __SET_VAR(data__->BW.,IDX,,0);
   __SET_VAR(data__->BW.,INU16,,__GET_VAR(data__->BBB.U16,));
   BUF_WRITE_body__(&data__->BW);
-
   goto __end;
 
 __end:

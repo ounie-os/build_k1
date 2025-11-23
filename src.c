@@ -30,10 +30,6 @@ void SRC_init__(void) {
 }
 
 void SRC_run__(unsigned long tick) {
-//  TSK2 = !(tick % 1);
-  if (TSK2) {
-TSK2 = 0;
     IDLE_body__(&REF3);
-  }
 }
 

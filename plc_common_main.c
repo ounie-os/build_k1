@@ -5,6 +5,9 @@
 #define _GNU_SOURCE
 
 #include "iec_types.h"
+#include <elog.h>
+#include <elog_file.h>
+
 /*
  * Prototypes of functions provided by generated C softPLC
  **/
@@ -59,40 +62,10 @@ void __run(void)
     __retrieve_1();
 
     /*__retrieve_debug();*/
-
-#ifdef WIN32R
-    PLC_GetTimeNow(&time_now);
-    PLC_TimeDelay(&__CURRENT_TIME,&time_elapsed);
-    HOTKEY_F5 = GetKeyState(VK_F5);
-    if(debug_state==1)
-    {
-		__tick++;
-		if (greatest_tick_count__)
-        __tick %= greatest_tick_count__;
-        config_run__(__tick);
-    }
-    else
-	{
-		if( HOTKEY_F5<0 && !debug_step_in)
-		{
-			config_run__(__tick);
-			debug_step_in = 1;
-		}
-		else
-		{
-			PLC_TimeMinus(&time_now,&time_last,&time_elasped_tmp);
-			PLC_TimeAdd(&time_elapsed,&time_elasped_tmp,&time_elapsed);
-			debug_step_in = 0;
-		}
-    }
-    time_last.tv_sec = time_now.tv_sec;
-    time_last.tv_nsec = time_now.tv_nsec;  
-#else
     __tick++;
     if (greatest_tick_count__)
         __tick %= greatest_tick_count__;
     config_run__(__tick);
-#endif
     __publish_debug();
     __publish_1();
     __publish_0();
@@ -162,16 +135,13 @@ static long long Ttick = 0;
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "ecrt.h"
-#include "OD_0_0.h"
+//#include "OD_0_0.h"
 
 
-UNS8 send_consise_dcf(CO_Data* d, UNS8 nodeId,ec_slave_config_t *sc);
 static int run = 1;
 
-extern UNS16 OD_0_0_highestSubIndex_obj4111;
 void StartMb()
 {
-	OD_0_0_highestSubIndex_obj4111=1000;
 	mbstart(520);
 }
 
@@ -220,7 +190,10 @@ void PLC_GetTime(IEC_TIME *CURRENT_TIME)
     //timenow = rt_timer_read();
     //CURRENT_TIME->tv_sec = timenow / 1000000000;
     //CURRENT_TIME->tv_nsec = timenow % 1000000000;
-    clock_gettime(CLOCK_REALTIME, CURRENT_TIME);
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    CURRENT_TIME->tv_sec = ts.tv_sec;
+    CURRENT_TIME->tv_nsec = ts.tv_nsec;
 }
 void PLC_SetTimer(unsigned long long next, unsigned long long period)
 {
@@ -231,6 +204,7 @@ void PLC_SetTimer(unsigned long long next, unsigned long long period)
 void plc_run()
 {
     PLC_GetTime(&__CURRENT_TIME);
+	//log_i("clock_gettime%ld,%ld",__CURRENT_TIME.tv_sec,__CURRENT_TIME.tv_nsec);
     __run();
 }
 
@@ -256,14 +230,26 @@ int create_tasks()
 #include <fcntl.h>
 /////////////////////////////////////////////////////////////////////////
 //RT_TASK bus_task;
-
-int main()
+int initelog()
+{
+	elog_init();
+	ElogFileCfg cfg = {"cf.log", 10*1024*1024, 10};
+    elog_file_config(&cfg);
+    elog_file_init();
+	elog_set_text_color_enabled(0);
+    elog_set_terminal_enabled(0);
+    elog_set_fmt(ELOG_LVL_ERROR, ELOG_FMT_TIME|ELOG_FMT_LINE);
+    elog_set_fmt(ELOG_LVL_INFO, ELOG_FMT_LVL);
+	elog_set_fmt(ELOG_LVL_WARN, ELOG_FMT_LVL);
+	elog_set_fmt(ELOG_LVL_ASSERT, ELOG_FMT_LVL);
+	elog_set_fmt(ELOG_LVL_VERBOSE, ELOG_FMT_LVL);
+	elog_set_fmt(ELOG_LVL_DEBUG, ELOG_FMT_LVL|ELOG_FMT_LINE);
+elog_start();
+	
+}
+int main1()
 {
 	int ret,i;
-
-  
-////////////////////////////////////////////////////////////////////
-	/* Perform auto-init of rt_print buffers if the task doesn't do so */
     signal(SIGTERM, signal_handler);
     signal(SIGINT, signal_handler);
 	signal(SIGHUP,signal_handler2);
@@ -279,5 +265,38 @@ int main()
 /////////////////////////////////////////////
 create_tasks();	
 
+    return 0;
+}
+
+
+/* PDO 输出偏移 */
+void plcrun();
+#define FREQ_HZ        1000
+#define PERIOD_NS      (1000000000L / FREQ_HZ)
+int main(void)
+{
+    //实时化 
+    mlockall(MCL_CURRENT | MCL_FUTURE);
+    struct sched_param sp = { .sched_priority = sched_get_priority_max(SCHED_FIFO) };
+    pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp);
+initelog();
+    /* 请求主站与域 */
+__init();
+StartMb();
+    puts("EK1100+EL2008 PREEMPT_RT demo running at 1 kHz ...");
+
+    struct timespec wakeup;
+    clock_gettime(CLOCK_MONOTONIC, &wakeup);
+    while (1) {
+        // 1 kHz 绝对周期 
+        wakeup.tv_nsec += PERIOD_NS;
+        if (wakeup.tv_nsec >= 1000000000L) {
+            wakeup.tv_nsec -= 1000000000L;
+            wakeup.tv_sec++;
+        }
+        clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &wakeup, NULL);
+		plc_run();
+		//puts("-");
+    }
     return 0;
 }
