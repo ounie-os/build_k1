@@ -14,22 +14,25 @@ extern unsigned long long common_ticktime__;
 
 #include "conf.h"
 __DECLARE_GLOBAL(BOOL,SRC,GINIT)
+__DECLARE_GLOBAL(PYGT,SRC,PYG)
 
 #include "POUS.c"
 
-BOOL TSK2;
-IDLE SRC__REF3;
-#define REF3 SRC__REF3
+BOOL TSK;
+MAIN_FBD SRC__REF;
+#define REF SRC__REF
 
 void SRC_init__(void) {
   BOOL retain;
   retain = 0;
   __INIT_GLOBAL(BOOL,GINIT,__INITIAL_VALUE(__BOOL_LITERAL(FALSE)),retain)
-  TSK2 = __BOOL_LITERAL(FALSE);
-  IDLE_init__(&REF3,retain);
+  __INIT_GLOBAL(PYGT,PYG,__INITIAL_VALUE({0,10.0}),retain)
+  TSK = __BOOL_LITERAL(FALSE);
+  MAIN_FBD_init__(&REF,retain);
 }
 
 void SRC_run__(unsigned long tick) {
-    IDLE_body__(&REF3);
+  //TSK = !(tick % 1);
+  MAIN_FBD_body__(&REF);
 }
 

@@ -7,7 +7,7 @@
 /* Declaration of mapped variables                                        */
 /**************************************************************************/
 UNS8 Can_Bitrate = 0x6;		/* Mapped at index 0x4000, subindex 0x00 */
-UNS8 SYS_TICK_PERIOD_MS = 0x28;		/* Mapped at index 0x4001, subindex 0x00 */
+UNS8 SYS_TICK_PERIOD_MS = 0x1;		/* Mapped at index 0x4001, subindex 0x00 */
 UNS8 Axis_Number = 0x1A;		/* Mapped at index 0x4002, subindex 0x00 */
 UNS8 Axis_Types[] =		/* Mapped at index 0x4003, subindex 0x01 - 0x1A */
   {

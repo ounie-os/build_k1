@@ -208,7 +208,6 @@ void plc_run()
     __run();
 }
 
-extern int TSK2;
 
 int create_tasks()
 {
@@ -222,7 +221,6 @@ int create_tasks()
             wakeup.tv_sec++;
         }
         clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &wakeup, NULL);
-        TSK2 =1;
         plc_run();
     }
 }
@@ -296,7 +294,6 @@ StartMb();
         }
         clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &wakeup, NULL);
 		plc_run();
-		//puts("-");
     }
     return 0;
 }
